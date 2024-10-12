@@ -3,4 +3,6 @@
     <string name="app_title">Notification Reader</string>
     <string name="button_play">Play</string>
     <string name="button_stop">Stop</string>
+    <string name="notification_large_text">New notification from %s of %s, says: %s</string>
+    <string name="notification_short_text">New notification from %s of %s</string>
 </resources>
