@@ -30,10 +30,6 @@ class TextToSpeechManager(context: Context, onInit: (Boolean) -> Unit) {
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
-    fun stop() {
-        tts.stop()
-    }
-
     fun shutdown() {
         tts.shutdown()
     }

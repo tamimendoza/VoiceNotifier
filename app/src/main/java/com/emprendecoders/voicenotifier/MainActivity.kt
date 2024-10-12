@@ -63,8 +63,15 @@ class MainActivity : ComponentActivity() {
     }
 
     fun receiveNotification() {
+        val formatLargeNotificationText = getString(R.string.notification_large_text)
+        val formatShortNotificationText = getString(R.string.notification_short_text)
+
         notificationReceiver = NotificationReceiver { app, title, text ->
-            notificationText.value = text
+            if (text.isEmpty()) {
+                notificationText.value = formatShortNotificationText.format(app, title)
+            } else {
+                notificationText.value = formatLargeNotificationText.format(app, title, text)
+            }
             if (isReading.value) {
                 ttsManager.speak(text, this@MainActivity)
             }
