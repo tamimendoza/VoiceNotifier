@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Notificador de Voz</string>
+    <string name="app_title">Lector de Notificaciones</string>
+    <string name="button_play">Iniciar</string>
+    <string name="button_stop">Detener</string>
+</resources>
