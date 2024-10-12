@@ -6,11 +6,13 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableStateOf
 import com.emprendecoders.voicenotifier.notification.NotificationReceiver
+import com.emprendecoders.voicenotifier.tts.TextToSpeechManager
 import com.emprendecoders.voicenotifier.ui.NotificationReaderScreen
 import com.emprendecoders.voicenotifier.ui.theme.VoiceNotifierTheme
 import com.emprendecoders.voicenotifier.util.isNotificationServiceEnabled
@@ -20,6 +22,7 @@ class MainActivity : ComponentActivity() {
     private val notificationText = mutableStateOf("...")
 
     private lateinit var notificationReceiver: NotificationReceiver
+    private lateinit var ttsManager: TextToSpeechManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +35,7 @@ class MainActivity : ComponentActivity() {
         receiveNotification()
         verifyRegisterReceiver()
         verifyNotificationPermission()
+        verifyTTS()
 
         setContent {
             VoiceNotifierTheme {
@@ -52,9 +56,18 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(notificationReceiver)
+        ttsManager.shutdown()
+    }
+
     fun receiveNotification() {
         notificationReceiver = NotificationReceiver { app, title, text ->
             notificationText.value = text
+            if (isReading.value) {
+                ttsManager.speak(text, this@MainActivity)
+            }
         }
     }
 
@@ -73,6 +86,12 @@ class MainActivity : ComponentActivity() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
             }
+        }
+    }
+
+    fun verifyTTS() {
+        ttsManager = TextToSpeechManager(this) { success ->
+            if (!success) Log.e("TTS", "Initialization failed")
         }
     }
 }
