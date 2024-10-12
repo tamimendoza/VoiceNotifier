@@ -23,10 +23,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.emprendecoders.voicenotifier" />
+                  <option name="mobileSdkAppId" value="1:1073005067445:android:adf553d06d105304db12fc" />
+                  <option name="projectId" value="voice-notifier-test" />
+                  <option name="projectNumber" value="1073005067445" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
