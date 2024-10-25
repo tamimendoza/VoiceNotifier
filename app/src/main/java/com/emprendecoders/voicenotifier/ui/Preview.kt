@@ -12,6 +12,7 @@ fun GreetingPreview() {
             name = "Notification Reader",
             btnTextPlay = "Play",
             btnTextStop = "Stop",
+            btnPermissionReadText = "Read Text",
             isReading = false,
             clickPlay = {},
             clickStop = {},

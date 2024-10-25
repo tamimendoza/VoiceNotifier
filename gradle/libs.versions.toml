@@ -1,15 +1,18 @@
 [versions]
-agp = "8.7.0"
+agp = "8.7.1"
 kotlin = "2.0.20"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.6"
-activityCompose = "1.9.2"
-composeBom = "2024.09.03"
+activityCompose = "1.9.3"
+composeBom = "2024.10.00"
 firebase = "4.4.2"
 firebase-bom = "33.4.0"
+gson = "2.11.0"
+room = "2.6.1"
+ksp = "2.0.21-1.0.25"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -29,9 +32,14 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-ktx = { module = "com.google.firebase:firebase-config-ktx", name = "firebase-ktx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", name = "firebase" }
+gson = { module = "com.google.code.gson:gson", name = "gson", version.ref = "gson" }
+room-runtime = { module = "androidx.room:room-runtime", name = "room", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", name = "room", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", name = "room", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
