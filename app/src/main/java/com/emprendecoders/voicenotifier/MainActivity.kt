@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
         val appTitle = getString(R.string.app_title)
         val btnTextPlay = getString(R.string.button_play)
         val btnTextStop = getString(R.string.button_stop)
+        val btnPermissionReadText = getString(R.string.text_switch_read_enable)
 
         receiveNotification()
         verifyRegisterReceiver()
@@ -43,6 +44,7 @@ class MainActivity : ComponentActivity() {
                     name = appTitle,
                     btnTextPlay = btnTextPlay,
                     btnTextStop = btnTextStop,
+                    btnPermissionReadText = btnPermissionReadText,
                     isReading = isReading.value,
                     clickPlay = {
                         isReading.value = true

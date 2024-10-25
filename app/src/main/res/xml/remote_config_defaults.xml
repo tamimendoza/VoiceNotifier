@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+  <entry>
+    <key>apps_permission</key>
+    <value>[{"packageName":"com.whatsapp.w4b","name":"Whatsapp"},{"packageName":"com.google.android.calendar","name":"Google Calendar"}]</value>
+  </entry>
+</defaults>
