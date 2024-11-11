@@ -13,6 +13,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.emprendecoders.voicenotifier.database.viewmodel.NotificacionConfigViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,7 +26,9 @@ fun NotificationReaderScreen(
     isReading: Boolean,
     clickPlay: () -> Unit,
     clickStop: () -> Unit,
-    notficationText: String
+    notficationText: String,
+    isReadTextNotification: Boolean,
+    clickSwitchReadTextNotification: (Boolean) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -50,10 +53,13 @@ fun NotificationReaderScreen(
                 Text(if (isReading) btnTextStop else btnTextPlay)
             }
             Text(text = notficationText, modifier = modifier.padding(16.dp))
+
+
             Row {
                 Switch(
-                    checked = isReading,
+                    checked = isReadTextNotification,
                     onCheckedChange = {
+                        clickSwitchReadTextNotification(it)
                     },
                     modifier = modifier.padding(start = 16.dp)
                 )

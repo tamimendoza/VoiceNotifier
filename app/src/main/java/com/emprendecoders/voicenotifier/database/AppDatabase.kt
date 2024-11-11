@@ -4,17 +4,20 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.emprendecoders.voicenotifier.database.dao.NotificationConfigDao
+import com.emprendecoders.voicenotifier.database.model.NotificationConfig
 
 @Database(
-    entities = [AppPermissionEntity::class],
+    entities = [NotificationConfig::class, AppPermissionEntity::class],
     version = 1,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    //dao
+    abstract fun notificationConfigDao(): NotificationConfigDao
 
     companion object {
+        @Volatile
         private var Instance: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {

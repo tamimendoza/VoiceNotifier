@@ -10,15 +10,27 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.lifecycleScope
+import com.emprendecoders.voicenotifier.database.model.NotificationConfig
+import com.emprendecoders.voicenotifier.database.viewmodel.NotificacionConfigViewModel
 import com.emprendecoders.voicenotifier.notification.NotificationReceiver
 import com.emprendecoders.voicenotifier.tts.TextToSpeechManager
 import com.emprendecoders.voicenotifier.ui.NotificationReaderScreen
 import com.emprendecoders.voicenotifier.ui.theme.VoiceNotifierTheme
+import com.emprendecoders.voicenotifier.util.DBContants.TABLE_CONFIG_SWITCH_READ_NOTIFY
 import com.emprendecoders.voicenotifier.util.isNotificationServiceEnabled
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private val viewModelConfig: NotificacionConfigViewModel by viewModels()
+
     private val isReading = mutableStateOf(false)
+    private val isReadTextNotification = mutableStateOf(false)
     private val notificationText = mutableStateOf("...")
 
     private lateinit var notificationReceiver: NotificationReceiver
@@ -37,6 +49,8 @@ class MainActivity : ComponentActivity() {
         verifyRegisterReceiver()
         verifyNotificationPermission()
         verifyTTS()
+        initConfig()
+        getConfig()
 
         setContent {
             VoiceNotifierTheme {
@@ -52,7 +66,12 @@ class MainActivity : ComponentActivity() {
                     clickStop = {
                         isReading.value = false
                     },
-                    notficationText = notificationText.value
+                    notficationText = notificationText.value,
+                    isReadTextNotification = isReadTextNotification.value,
+                    clickSwitchReadTextNotification = { isChecked ->
+                        isReadTextNotification.value = isChecked
+                        updateConfig(isChecked)
+                    }
                 )
             }
         }
@@ -69,13 +88,13 @@ class MainActivity : ComponentActivity() {
         val formatShortNotificationText = getString(R.string.notification_short_text)
 
         notificationReceiver = NotificationReceiver { app, title, text ->
-            if (text.isEmpty()) {
+            if (text.isBlank() || isReadTextNotification.value == false) {
                 notificationText.value = formatShortNotificationText.format(app, title)
             } else {
                 notificationText.value = formatLargeNotificationText.format(app, title, text)
             }
             if (isReading.value) {
-                ttsManager.speak(text, this@MainActivity)
+                ttsManager.speak(notificationText.value, this@MainActivity)
             }
         }
     }
@@ -103,4 +122,21 @@ class MainActivity : ComponentActivity() {
             if (!success) Log.e("TTS", "Initialization failed")
         }
     }
+
+    fun initConfig() {
+        viewModelConfig.initConfigIfNeeded()
+    }
+
+    fun getConfig() {
+        lifecycleScope.launch(Dispatchers.Main) {
+            isReadTextNotification.value = viewModelConfig.getConfigById(TABLE_CONFIG_SWITCH_READ_NOTIFY)?.enabled == true
+        }
+    }
+
+    fun updateConfig(enabled: Boolean) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModelConfig.updateConfig(NotificationConfig(id = TABLE_CONFIG_SWITCH_READ_NOTIFY, enabled))
+        }
+    }
+
 }
