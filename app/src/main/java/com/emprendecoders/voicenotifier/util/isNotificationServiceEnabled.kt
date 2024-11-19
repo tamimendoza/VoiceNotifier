@@ -8,5 +8,5 @@ fun isNotificationServiceEnabled(context: Context): Boolean {
         context.contentResolver, "enabled_notification_listeners"
     )
     val packageName = context.packageName
-    return enabledNotificationListeners != null && enabledNotificationListeners.contains(packageName)
+    return enabledNotificationListeners?.contains(packageName) == true
 }

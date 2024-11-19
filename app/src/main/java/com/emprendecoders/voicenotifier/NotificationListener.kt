@@ -1,21 +1,32 @@
 package com.emprendecoders.voicenotifier
 
+import android.app.Notification
 import android.content.Intent
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import com.emprendecoders.voicenotifier.dto.AppPermission
+import android.util.Log
+import com.emprendecoders.voicenotifier.database.AppDatabase
+import com.emprendecoders.voicenotifier.dto.AppPermissionDto
 import com.emprendecoders.voicenotifier.util.AppsPermissionLiveData
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 class NotificationListener : NotificationListenerService() {
 
     private lateinit var remoteConfig: FirebaseRemoteConfig
+    private lateinit var database: AppDatabase
+    private val serviceScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
     override fun onCreate() {
         super.onCreate()
 
+        database = AppDatabase.getDatabase(applicationContext)
         remoteConfig = FirebaseRemoteConfig.getInstance()
 
         val configSettings = FirebaseRemoteConfigSettings.Builder()
@@ -29,23 +40,44 @@ class NotificationListener : NotificationListenerService() {
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         val packageName = sbn?.packageName
-        val title = sbn?.notification?.extras?.getString("android.title")
-        val text = sbn?.notification?.extras?.getString("android.text")
-
-        val nombreApp = AppsPermissionLiveData.getNameByPackage(packageName.toString())
-
-        if (nombreApp == "Whatsapp") {
-            if (title?.lowercase() == "whatsapp") return
-            if (text?.lowercase()?.contains("mensajes nuevos") == true) return
+        if (packageName == null) {
+            return
         }
 
-        if (nombreApp.isNotBlank()) {
-            val intent = Intent("com.emprendecoders.voicenotifier.NOTIFICATION_LISTENER")
-            intent.setPackage("com.emprendecoders.voicenotifier")
+        val extras = sbn.notification?.extras
+        val title = extras?.getString(Notification.EXTRA_TITLE)
+        val text = extras?.getString(Notification.EXTRA_TEXT)
 
-            intent.putExtra("app", nombreApp)
-            intent.putExtra("title", title)
-            intent.putExtra("text", text)
+        val nombreApp = AppsPermissionLiveData.getNameByPackage(packageName)
+
+        if (nombreApp.isBlank()) {
+            return
+        }
+
+        if (nombreApp.lowercase().contains("whatsapp")) {
+            if (title?.lowercase() == "whatsapp" ||
+                text?.lowercase()?.contains("mensajes nuevos") == true ||
+                text?.lowercase()?.contains("new messages") == true
+            ) {
+                return
+            }
+        }
+
+        serviceScope.launch {
+            val appPermission =
+                database.appPermissionDao().getAppByPackageName(packageName)
+
+            if (appPermission?.enabled == false) {
+                return@launch
+            }
+
+            val intent = Intent("com.emprendecoders.voicenotifier.NOTIFICATION_LISTENER")
+                .setPackage("com.emprendecoders.voicenotifier")
+                .apply {
+                    putExtra("app", nombreApp)
+                    putExtra("title", title)
+                    putExtra("text", text)
+                }
 
             sendBroadcast(intent)
         }
@@ -57,10 +89,20 @@ class NotificationListener : NotificationListenerService() {
                 if (task.isSuccessful) {
                     val remoteJson = remoteConfig.getString("apps_permission")
                     val permissions =
-                        Gson().fromJson(remoteJson, Array<AppPermission>::class.java).toList()
+                        Gson().fromJson(remoteJson, Array<AppPermissionDto>::class.java).toList()
                     AppsPermissionLiveData.updateList(permissions)
                 }
             }
+    }
+
+    override fun onNotificationRemoved(sbn: StatusBarNotification?) {
+        Log.d("NotificationListener", "Notificación eliminada de: ${sbn?.packageName}")
+        super.onNotificationRemoved(sbn)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceScope.cancel()
     }
 
 }

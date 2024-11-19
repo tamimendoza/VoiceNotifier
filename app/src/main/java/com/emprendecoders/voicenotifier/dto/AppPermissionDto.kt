@@ -1,6 +1,6 @@
 package com.emprendecoders.voicenotifier.dto
 
-data class AppPermission(
+data class AppPermissionDto(
     val packageName: String,
     val name: String
 )

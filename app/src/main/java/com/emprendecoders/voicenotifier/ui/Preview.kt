@@ -16,7 +16,10 @@ fun GreetingPreview() {
             isReading = false,
             clickPlay = {},
             clickStop = {},
-            notficationText = "..."
+            notficationText = "...",
+            isReadTextNotification = true,
+            clickSwitchReadTextNotification = {},
+            viewModelApp = null,
         )
     }
 }

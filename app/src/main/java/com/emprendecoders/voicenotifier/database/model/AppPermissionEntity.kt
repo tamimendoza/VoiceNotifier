@@ -1,4 +1,4 @@
-package com.emprendecoders.voicenotifier.database
+package com.emprendecoders.voicenotifier.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class AppPermissionEntity(
     @PrimaryKey
     val packageName: String,
-    val name: String
+    val name: String,
+    val enabled: Boolean
 )

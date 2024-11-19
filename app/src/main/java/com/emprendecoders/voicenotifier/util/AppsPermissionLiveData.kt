@@ -1,13 +1,13 @@
 package com.emprendecoders.voicenotifier.util
 
 import androidx.lifecycle.MutableLiveData
-import com.emprendecoders.voicenotifier.dto.AppPermission
+import com.emprendecoders.voicenotifier.dto.AppPermissionDto
 
 object AppsPermissionLiveData {
 
-    private val _listado = MutableLiveData<List<AppPermission>>()
+    private val _listado = MutableLiveData<List<AppPermissionDto>>()
 
-    fun updateList(list: List<AppPermission>) {
+    fun updateList(list: List<AppPermissionDto>) {
         _listado.postValue(list)
     }
 

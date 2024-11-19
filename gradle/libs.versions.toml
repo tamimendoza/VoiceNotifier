@@ -1,15 +1,15 @@
 [versions]
-agp = "8.7.1"
-kotlin = "2.0.20"
-coreKtx = "1.13.1"
+agp = "8.7.2"
+kotlin = "2.0.21"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.6"
+lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
-composeBom = "2024.10.00"
+composeBom = "2024.11.00"
 firebase = "4.4.2"
-firebase-bom = "33.4.0"
+firebase-bom = "33.6.0"
 gson = "2.11.0"
 room = "2.6.1"
 ksp = "2.0.21-1.0.25"
@@ -43,3 +43,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room", version.ref = "room" }
