@@ -11,10 +11,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.lifecycleScope
-import com.emprendecoders.voicenotifier.database.model.NotificationConfig
+import com.emprendecoders.voicenotifier.database.model.NotificationConfigEntity
+import com.emprendecoders.voicenotifier.database.viewmodel.AppPermissionViewModel
 import com.emprendecoders.voicenotifier.database.viewmodel.NotificacionConfigViewModel
 import com.emprendecoders.voicenotifier.notification.NotificationReceiver
 import com.emprendecoders.voicenotifier.tts.TextToSpeechManager
@@ -22,19 +22,19 @@ import com.emprendecoders.voicenotifier.ui.NotificationReaderScreen
 import com.emprendecoders.voicenotifier.ui.theme.VoiceNotifierTheme
 import com.emprendecoders.voicenotifier.util.DBContants.TABLE_CONFIG_SWITCH_READ_NOTIFY
 import com.emprendecoders.voicenotifier.util.isNotificationServiceEnabled
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private lateinit var notificationReceiver: NotificationReceiver
+    private lateinit var ttsManager: TextToSpeechManager
+
     private val viewModelConfig: NotificacionConfigViewModel by viewModels()
+    private val viewModelApp: AppPermissionViewModel by viewModels()
 
     private val isReading = mutableStateOf(false)
     private val isReadTextNotification = mutableStateOf(false)
     private val notificationText = mutableStateOf("...")
-
-    private lateinit var notificationReceiver: NotificationReceiver
-    private lateinit var ttsManager: TextToSpeechManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +71,8 @@ class MainActivity : ComponentActivity() {
                     clickSwitchReadTextNotification = { isChecked ->
                         isReadTextNotification.value = isChecked
                         updateConfig(isChecked)
-                    }
+                    },
+                    viewModelApp = viewModelApp
                 )
             }
         }
@@ -129,13 +130,19 @@ class MainActivity : ComponentActivity() {
 
     fun getConfig() {
         lifecycleScope.launch(Dispatchers.Main) {
-            isReadTextNotification.value = viewModelConfig.getConfigById(TABLE_CONFIG_SWITCH_READ_NOTIFY)?.enabled == true
+            isReadTextNotification.value =
+                viewModelConfig.getConfigById(TABLE_CONFIG_SWITCH_READ_NOTIFY)?.enabled == true
         }
     }
 
     fun updateConfig(enabled: Boolean) {
         lifecycleScope.launch(Dispatchers.IO) {
-            viewModelConfig.updateConfig(NotificationConfig(id = TABLE_CONFIG_SWITCH_READ_NOTIFY, enabled))
+            viewModelConfig.updateConfig(
+                NotificationConfigEntity(
+                    id = TABLE_CONFIG_SWITCH_READ_NOTIFY,
+                    enabled
+                )
+            )
         }
     }
 
