@@ -11,9 +11,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.emprendecoders.voicenotifier.database.viewmodel.NotificacionConfigViewModel
+import com.emprendecoders.voicenotifier.database.model.AppPermissionEntity
+import com.emprendecoders.voicenotifier.database.viewmodel.AppPermissionViewModel
+import com.emprendecoders.voicenotifier.util.remoteConfig
+import kotlinx.coroutines.coroutineScope
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,8 +34,19 @@ fun NotificationReaderScreen(
     clickStop: () -> Unit,
     notficationText: String,
     isReadTextNotification: Boolean,
-    clickSwitchReadTextNotification: (Boolean) -> Unit
+    clickSwitchReadTextNotification: (Boolean) -> Unit,
+    viewModelApp: AppPermissionViewModel?
 ) {
+    val listado = remember { mutableStateListOf<AppPermissionEntity>() }
+
+    LaunchedEffect(Unit) {
+        coroutineScope {
+            val remoteList = remoteConfig(viewModelApp)
+            listado.clear()
+            listado.addAll(remoteList)
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -54,7 +71,6 @@ fun NotificationReaderScreen(
             }
             Text(text = notficationText, modifier = modifier.padding(16.dp))
 
-
             Row {
                 Switch(
                     checked = isReadTextNotification,
@@ -68,6 +84,10 @@ fun NotificationReaderScreen(
                     modifier = modifier.padding(start = 16.dp, top = 12.dp)
                 )
             }
+
+            DynamicList(listado = listado, onPermissionChanged = { item ->
+                viewModelApp?.insert(item)
+            })
         }
     }
 }

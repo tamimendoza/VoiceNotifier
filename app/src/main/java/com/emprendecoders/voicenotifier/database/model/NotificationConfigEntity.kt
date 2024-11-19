@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "notification_config")
-data class NotificationConfig(
+data class NotificationConfigEntity(
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0,
     var enabled: Boolean

@@ -19,6 +19,7 @@ fun GreetingPreview() {
             notficationText = "...",
             isReadTextNotification = true,
             clickSwitchReadTextNotification = {},
+            viewModelApp = null,
         )
     }
 }
