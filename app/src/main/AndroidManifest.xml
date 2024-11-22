@@ -43,7 +43,7 @@
         <service
             android:name=".ForegroundService"
             android:exported="false"
-            android:permission="dataSync"
+            android:foregroundServiceType="dataSync"
             />
     </application>
 
