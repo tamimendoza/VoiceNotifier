@@ -1,17 +1,20 @@
 package com.emprendecoders.voicenotifier
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.service.notification.NotificationListenerService
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.emprendecoders.voicenotifier.database.model.NotificationConfigEntity
 import com.emprendecoders.voicenotifier.database.viewmodel.AppPermissionViewModel
@@ -40,17 +43,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        setupInitialConfig()
+        setupUI()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(notificationReceiver)
+        ttsManager.shutdown()
+    }
+
+    private fun setupUI() {
         val appTitle = getString(R.string.app_title)
         val btnTextPlay = getString(R.string.button_play)
         val btnTextStop = getString(R.string.button_stop)
         val btnPermissionReadText = getString(R.string.text_switch_read_enable)
-
-        receiveNotification()
-        verifyRegisterReceiver()
-        verifyNotificationPermission()
-        verifyTTS()
-        initConfig()
-        getConfig()
 
         setContent {
             VoiceNotifierTheme {
@@ -62,9 +69,13 @@ class MainActivity : ComponentActivity() {
                     isReading = isReading.value,
                     clickPlay = {
                         isReading.value = true
+                        val serviceIntent = Intent(this, ForegroundService::class.java)
+                        ContextCompat.startForegroundService(this, serviceIntent)
                     },
                     clickStop = {
                         isReading.value = false
+                        val serviceIntent = Intent(this, ForegroundService::class.java)
+                        stopService(serviceIntent)
                     },
                     notficationText = notificationText.value,
                     isReadTextNotification = isReadTextNotification.value,
@@ -78,10 +89,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(notificationReceiver)
-        ttsManager.shutdown()
+    private fun setupInitialConfig() {
+        receiveNotification()
+        verifyRegisterReceiver()
+        verifyNotificationPermission()
+        initTTS()
+        loadConfig()
+        getConfig()
     }
 
     fun receiveNotification() {
@@ -118,13 +132,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun verifyTTS() {
+    fun initTTS() {
         ttsManager = TextToSpeechManager(this) { success ->
             if (!success) Log.e("TTS", "Initialization failed")
         }
     }
 
-    fun initConfig() {
+    fun loadConfig() {
         viewModelConfig.initConfigIfNeeded()
     }
 
