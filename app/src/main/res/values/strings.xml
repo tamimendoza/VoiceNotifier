@@ -6,4 +6,5 @@
     <string name="notification_large_text">New notification from %s of %s, says: %s</string>
     <string name="notification_short_text">New notification from %s of %s</string>
     <string name="text_switch_read_enable">Read notifications text</string>
+    <string name="read_notificacion_background">Reading notification in background</string>
 </resources>
