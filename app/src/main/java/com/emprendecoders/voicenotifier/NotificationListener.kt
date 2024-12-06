@@ -51,18 +51,19 @@ class NotificationListener : NotificationListenerService() {
         val appName = AppsPermissionLiveData.getNameByPackage(packageName)
         if (appName.isBlank() || shouldIgnoreNotification(appName, title, text)) return
 
-        processNotification(appName, title, text)
+        processNotification(packageName, appName, title, text)
     }
 
     private fun shouldIgnoreNotification(appName: String, title: String?, text: String?): Boolean {
         return appName.lowercase().contains("whatsapp") && (
+                title?.isBlank() == true ||
                 title?.lowercase() == "whatsapp" ||
                         text?.lowercase()?.contains("mensajes nuevos") == true ||
                         text?.lowercase()?.contains("new messages") == true
                 )
     }
 
-    private fun processNotification(appName: String, title: String, text: String) {
+    private fun processNotification(packageName: String, appName: String, title: String, text: String) {
         serviceScope.launch {
             val appPermission = database.appPermissionDao().getAppByPackageName(packageName)
             if (appPermission?.enabled == false) return@launch
