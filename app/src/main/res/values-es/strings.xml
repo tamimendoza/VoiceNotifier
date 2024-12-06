@@ -7,4 +7,5 @@
     <string name="notification_short_text">Nueva notificación desde %s de %s</string>
     <string name="text_switch_read_enable">Leer texto de notificaciones</string>
     <string name="read_notificacion_background">Leyendo notificacion en segundo plano</string>
+    <string name="text_permission_phone">Permiso necesario para evitar interrumpciones</string>
 </resources>

@@ -56,6 +56,7 @@ class NotificationListener : NotificationListenerService() {
 
     private fun shouldIgnoreNotification(appName: String, title: String?, text: String?): Boolean {
         return appName.lowercase().contains("whatsapp") && (
+                title?.isBlank() == true ||
                 title?.lowercase() == "whatsapp" ||
                         text?.lowercase()?.contains("mensajes nuevos") == true ||
                         text?.lowercase()?.contains("new messages") == true

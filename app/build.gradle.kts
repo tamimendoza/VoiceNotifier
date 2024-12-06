@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.emprendecoders.voicenotifier"
-        minSdk = 21
+        minSdk = 23
         //noinspection EditedTargetSdkVersion
         targetSdk = 35
         versionCode = 1

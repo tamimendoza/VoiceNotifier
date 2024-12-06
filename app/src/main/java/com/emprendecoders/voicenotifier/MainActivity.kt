@@ -1,19 +1,21 @@
 package com.emprendecoders.voicenotifier
 
 import android.annotation.SuppressLint
-import android.app.Notification
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.service.notification.NotificationListenerService
+import android.telephony.TelephonyManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.material3.Snackbar
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.emprendecoders.voicenotifier.database.model.NotificationConfigEntity
@@ -24,6 +26,7 @@ import com.emprendecoders.voicenotifier.tts.TextToSpeechManager
 import com.emprendecoders.voicenotifier.ui.NotificationReaderScreen
 import com.emprendecoders.voicenotifier.ui.theme.VoiceNotifierTheme
 import com.emprendecoders.voicenotifier.util.DBContants.TABLE_CONFIG_SWITCH_READ_NOTIFY
+import com.emprendecoders.voicenotifier.util.MyTelephonyCallback
 import com.emprendecoders.voicenotifier.util.isNotificationServiceEnabled
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,26 +34,48 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private lateinit var notificationReceiver: NotificationReceiver
     private lateinit var ttsManager: TextToSpeechManager
+    private var telephonyCallback: MyTelephonyCallback? = null
 
     private val viewModelConfig: NotificacionConfigViewModel by viewModels()
     private val viewModelApp: AppPermissionViewModel by viewModels()
 
     private val isReading = mutableStateOf(false)
+    private val isInCallStatus = mutableStateOf(false)
     private val isReadTextNotification = mutableStateOf(false)
     private val notificationText = mutableStateOf("...")
+    private val permissionRequestCode = 100
+    private val textPermissionReadPhoneState = mutableStateOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+        textPermissionReadPhoneState.value = getString(R.string.text_permission_phone)
+        if (checkPermission()) {
+            verificarAudio()
+        } else {
+            requestPermission()
+        }
+
         setupInitialConfig()
         setupUI()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        verificarAudio()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopAudio()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(notificationReceiver)
         ttsManager.shutdown()
+        stopAudio()
     }
 
     private fun setupUI() {
@@ -108,7 +133,7 @@ class MainActivity : ComponentActivity() {
             } else {
                 notificationText.value = formatLargeNotificationText.format(app, title, text)
             }
-            if (isReading.value) {
+            if (isReading.value && isInCallStatus.value == false) {
                 ttsManager.speak(notificationText.value, this@MainActivity)
             }
         }
@@ -126,9 +151,7 @@ class MainActivity : ComponentActivity() {
 
     fun verifyNotificationPermission() {
         if (!isNotificationServiceEnabled(this)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
-            }
+            startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
         }
     }
 
@@ -158,6 +181,49 @@ class MainActivity : ComponentActivity() {
                 )
             )
         }
+    }
+
+    fun verificarAudio() {
+        if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val telephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
+
+                telephonyCallback = MyTelephonyCallback { isInCall ->
+                    isInCallStatus.value = isInCall
+                }
+
+                telephonyManager.registerTelephonyCallback(mainExecutor, telephonyCallback!!)
+            }
+        } else {
+            Toast.makeText(this, textPermissionReadPhoneState.value, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    fun stopAudio() {
+        if (checkSelfPermission(android.Manifest.permission.READ_PHONE_STATE) == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val telephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
+
+                telephonyCallback?.let {
+                    telephonyManager.unregisterTelephonyCallback(it)
+                }
+            }
+        }
+    }
+
+    private fun checkPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.READ_PHONE_STATE
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.READ_PHONE_STATE),
+            permissionRequestCode
+        )
     }
 
 }
