@@ -5,6 +5,7 @@
     <string name="button_stop">Detener</string>
     <string name="notification_large_text">Nueva notificación desde %s de %s, dice: %s</string>
     <string name="notification_short_text">Nueva notificación desde %s de %s</string>
+    <string name="notification_short_notitle">Nueva notificación desde %s</string>
     <string name="text_switch_read_enable">Leer texto de notificaciones</string>
     <string name="read_notificacion_background">Leyendo notificacion en segundo plano</string>
     <string name="text_permission_phone">Permiso necesario para evitar interrumpciones</string>

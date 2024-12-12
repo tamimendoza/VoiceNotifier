@@ -126,10 +126,15 @@ class MainActivity : ComponentActivity() {
     fun receiveNotification() {
         val formatLargeNotificationText = getString(R.string.notification_large_text)
         val formatShortNotificationText = getString(R.string.notification_short_text)
+        val formatShortNotificationNoTitle = getString(R.string.notification_short_notitle)
 
         notificationReceiver = NotificationReceiver { app, title, text ->
             if (text.isBlank() || isReadTextNotification.value == false) {
-                notificationText.value = formatShortNotificationText.format(app, title)
+                if (title.isBlank()) {
+                    notificationText.value = formatShortNotificationNoTitle.format(app)
+                } else {
+                    notificationText.value = formatShortNotificationText.format(app, title)
+                }
             } else {
                 notificationText.value = formatLargeNotificationText.format(app, title, text)
             }
