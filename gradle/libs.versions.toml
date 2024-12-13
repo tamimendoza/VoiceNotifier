@@ -7,9 +7,10 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
-composeBom = "2024.11.00"
+composeBom = "2024.12.01"
 firebase = "4.4.2"
-firebase-bom = "33.6.0"
+firebase-bom = "33.7.0"
+firebase-crashlytics = "3.0.2"
 gson = "2.11.0"
 room = "2.6.1"
 ksp = "2.0.21-1.0.25"
@@ -31,6 +32,7 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-ktx = { module = "com.google.firebase:firebase-config-ktx", name = "firebase-ktx" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", name = "firebase" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx", name = "firebase" }
 gson = { module = "com.google.code.gson:gson", name = "gson", version.ref = "gson" }
 room-runtime = { module = "androidx.room:room-runtime", name = "room", version.ref = "room" }
@@ -42,5 +44,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 firebase = { id = "com.google.gms.google-services", version.ref = "firebase" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }

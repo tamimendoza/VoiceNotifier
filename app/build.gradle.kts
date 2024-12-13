@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.firebase)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -66,6 +67,7 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.ktx)
+    implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.analytics)
     implementation(libs.gson)
 
