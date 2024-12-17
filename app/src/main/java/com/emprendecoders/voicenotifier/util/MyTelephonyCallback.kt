@@ -9,7 +9,8 @@ import androidx.annotation.RequiresApi
 class MyTelephonyCallback(private val onCallStateChanged: (Boolean) -> Unit) : TelephonyCallback(),
     TelephonyCallback.CallStateListener {
     override fun onCallStateChanged(state: Int) {
-        val isInCall = state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_RINGING
+        val isInCall =
+            state == TelephonyManager.CALL_STATE_OFFHOOK || state == TelephonyManager.CALL_STATE_RINGING
         onCallStateChanged(isInCall)
     }
 }

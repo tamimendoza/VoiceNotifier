@@ -57,13 +57,18 @@ class NotificationListener : NotificationListenerService() {
     private fun shouldIgnoreNotification(appName: String, title: String?, text: String?): Boolean {
         return appName.lowercase().contains("whatsapp") && (
                 title?.isBlank() == true ||
-                title?.lowercase() == "whatsapp" ||
+                        title?.lowercase() == "whatsapp" ||
                         text?.lowercase()?.contains("mensajes nuevos") == true ||
                         text?.lowercase()?.contains("new messages") == true
                 )
     }
 
-    private fun processNotification(packageName: String, appName: String, title: String, text: String) {
+    private fun processNotification(
+        packageName: String,
+        appName: String,
+        title: String,
+        text: String
+    ) {
         serviceScope.launch {
             val appPermission = database.appPermissionDao().getAppByPackageName(packageName)
             if (appPermission?.enabled == false) return@launch
@@ -100,12 +105,13 @@ class NotificationListener : NotificationListenerService() {
 
     private fun fetchAppPermissions() {
         remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val remoteJson = remoteConfig.getString("apps_permission")
-                    val permissions = Gson().fromJson(remoteJson, Array<AppPermissionDto>::class.java).toList()
-                    AppsPermissionLiveData.updateList(permissions)
-                }
+            if (task.isSuccessful) {
+                val remoteJson = remoteConfig.getString("apps_permission")
+                val permissions =
+                    Gson().fromJson(remoteJson, Array<AppPermissionDto>::class.java).toList()
+                AppsPermissionLiveData.updateList(permissions)
             }
+        }
     }
 
 }
