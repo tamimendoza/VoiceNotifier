@@ -2,7 +2,7 @@ package com.emprendecoders.voicenotifier.database.repository
 
 import com.emprendecoders.voicenotifier.database.dao.NotificationConfigDao
 import com.emprendecoders.voicenotifier.database.model.NotificationConfigEntity
-import com.emprendecoders.voicenotifier.util.DBContants.TABLE_CONFIG_SWITCH_READ_NOTIFY
+import com.emprendecoders.voicenotifier.constant.DBConstants.TABLE_CONFIG_SWITCH_READ_NOTIFY
 
 class NotificationConfigRepository(private val dao: NotificationConfigDao) {
 

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.emprendecoders.voicenotifier.constant.AppConstant.NAME_DATABASE
 import com.emprendecoders.voicenotifier.database.dao.AppPermissionDao
 import com.emprendecoders.voicenotifier.database.dao.NotificationConfigDao
 import com.emprendecoders.voicenotifier.database.model.AppPermissionEntity
@@ -28,7 +29,7 @@ abstract class AppDatabase : RoomDatabase() {
                 Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "voicenotifier.db"
+                    NAME_DATABASE
                 )
                     .build()
                     .also { Instance = it }

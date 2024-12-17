@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.emprendecoders.voicenotifier.constant.AppConstant.INTENT_ACTION_FILTER
 import com.emprendecoders.voicenotifier.database.model.NotificationConfigEntity
 import com.emprendecoders.voicenotifier.database.viewmodel.AppPermissionViewModel
 import com.emprendecoders.voicenotifier.database.viewmodel.NotificacionConfigViewModel
@@ -24,7 +25,7 @@ import com.emprendecoders.voicenotifier.notification.NotificationReceiver
 import com.emprendecoders.voicenotifier.tts.TextToSpeechManager
 import com.emprendecoders.voicenotifier.ui.NotificationReaderScreen
 import com.emprendecoders.voicenotifier.ui.theme.VoiceNotifierTheme
-import com.emprendecoders.voicenotifier.util.DBContants.TABLE_CONFIG_SWITCH_READ_NOTIFY
+import com.emprendecoders.voicenotifier.constant.DBConstants.TABLE_CONFIG_SWITCH_READ_NOTIFY
 import com.emprendecoders.voicenotifier.util.MyTelephonyCallback
 import com.emprendecoders.voicenotifier.util.isNotificationServiceEnabled
 import kotlinx.coroutines.Dispatchers
@@ -145,7 +146,7 @@ class MainActivity : ComponentActivity() {
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     fun verifyRegisterReceiver() {
-        val filter = IntentFilter("com.emprendecoders.voicenotifier.NOTIFICATION_LISTENER")
+        val filter = IntentFilter(INTENT_ACTION_FILTER)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(notificationReceiver, filter, RECEIVER_NOT_EXPORTED)
         } else {

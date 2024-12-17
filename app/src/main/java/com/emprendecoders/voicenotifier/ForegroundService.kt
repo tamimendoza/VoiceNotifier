@@ -8,13 +8,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.emprendecoders.voicenotifier.constant.AppConstant
 
 class ForegroundService : Service() {
-    companion object {
-        private const val NOTIFICACION_ID = 1
-        private const val CHANNEL_ID = "ForegroundServiceChannel"
-        private const val CHANNEL_NAME = "Foreground Service Channel"
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -31,8 +27,8 @@ class ForegroundService : Service() {
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_NAME,
+                AppConstant.CHANNEL_ID,
+                AppConstant.CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             getSystemService(NotificationManager::class.java)?.createNotificationChannel(channel)
@@ -43,13 +39,13 @@ class ForegroundService : Service() {
     private fun startForegroundService() {
         val appTitle = getString(R.string.app_title)
         val appNotificacionBackground = getString(R.string.read_notificacion_background)
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this, AppConstant.CHANNEL_ID)
             .setContentTitle(appTitle)
             .setContentText(appNotificacionBackground)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .build()
 
-        startForeground(NOTIFICACION_ID, notification)
+        startForeground(AppConstant.NOTIFICACION_ID, notification)
     }
 
 }

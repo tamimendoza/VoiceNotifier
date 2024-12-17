@@ -5,6 +5,15 @@ import android.content.Intent
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import com.emprendecoders.voicenotifier.constant.AppConstant.APPS_PERMISSION
+import com.emprendecoders.voicenotifier.constant.AppConstant.INTENT_ACTION_FILTER
+import com.emprendecoders.voicenotifier.constant.AppConstant.NOTIFY_APP
+import com.emprendecoders.voicenotifier.constant.AppConstant.NOTIFY_TEXT
+import com.emprendecoders.voicenotifier.constant.AppConstant.NOTIFY_TITLE
+import com.emprendecoders.voicenotifier.constant.AppConstant.PACKAGE_NAME
+import com.emprendecoders.voicenotifier.constant.AppConstant.WHATSAPP
+import com.emprendecoders.voicenotifier.constant.AppConstant.WHATSAPP_NEW_MESSAGES_EN
+import com.emprendecoders.voicenotifier.constant.AppConstant.WHATSAPP_NEW_MESSAGES_ES
 import com.emprendecoders.voicenotifier.database.AppDatabase
 import com.emprendecoders.voicenotifier.dto.AppPermissionDto
 import com.emprendecoders.voicenotifier.util.AppsPermissionLiveData
@@ -55,11 +64,11 @@ class NotificationListener : NotificationListenerService() {
     }
 
     private fun shouldIgnoreNotification(appName: String, title: String?, text: String?): Boolean {
-        return appName.lowercase().contains("whatsapp") && (
+        return appName.lowercase().contains(WHATSAPP) && (
                 title?.isBlank() == true ||
-                        title?.lowercase() == "whatsapp" ||
-                        text?.lowercase()?.contains("mensajes nuevos") == true ||
-                        text?.lowercase()?.contains("new messages") == true
+                        title?.lowercase() == WHATSAPP ||
+                        text?.lowercase()?.contains(WHATSAPP_NEW_MESSAGES_ES) == true ||
+                        text?.lowercase()?.contains(WHATSAPP_NEW_MESSAGES_EN) == true
                 )
     }
 
@@ -78,12 +87,12 @@ class NotificationListener : NotificationListenerService() {
     }
 
     private fun sendNotificationBroadcast(appName: String, title: String, text: String) {
-        val intent = Intent("com.emprendecoders.voicenotifier.NOTIFICATION_LISTENER")
-            .setPackage("com.emprendecoders.voicenotifier")
+        val intent = Intent(INTENT_ACTION_FILTER)
+            .setPackage(PACKAGE_NAME)
             .apply {
-                putExtra("app", appName)
-                putExtra("title", title)
-                putExtra("text", text)
+                putExtra(NOTIFY_APP, appName)
+                putExtra(NOTIFY_TITLE, title)
+                putExtra(NOTIFY_TEXT, text)
             }
         sendBroadcast(intent)
     }
@@ -106,7 +115,7 @@ class NotificationListener : NotificationListenerService() {
     private fun fetchAppPermissions() {
         remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val remoteJson = remoteConfig.getString("apps_permission")
+                val remoteJson = remoteConfig.getString(APPS_PERMISSION)
                 val permissions =
                     Gson().fromJson(remoteJson, Array<AppPermissionDto>::class.java).toList()
                 AppsPermissionLiveData.updateList(permissions)
