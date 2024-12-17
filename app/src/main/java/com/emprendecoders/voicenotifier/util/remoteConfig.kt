@@ -2,6 +2,7 @@ package com.emprendecoders.voicenotifier.util
 
 import android.util.Log
 import com.emprendecoders.voicenotifier.R
+import com.emprendecoders.voicenotifier.constant.AppConstant.APPS_PERMISSION
 import com.emprendecoders.voicenotifier.database.model.AppPermissionEntity
 import com.emprendecoders.voicenotifier.database.viewmodel.AppPermissionViewModel
 import com.emprendecoders.voicenotifier.dto.AppPermissionDto
@@ -17,7 +18,7 @@ suspend fun remoteConfig(viewModelApp: AppPermissionViewModel?): List<AppPermiss
     try {
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
         remoteConfig.fetchAndActivate().await()
-        val remoteJson = remoteConfig.getString("apps_permission")
+        val remoteJson = remoteConfig.getString(APPS_PERMISSION)
 
         val remoteItems = Gson().fromJson(remoteJson, Array<AppPermissionDto>::class.java).toList()
 
