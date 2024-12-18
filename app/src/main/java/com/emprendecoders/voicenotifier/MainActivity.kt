@@ -83,13 +83,19 @@ class MainActivity : ComponentActivity() {
         val btnTextPlay = getString(R.string.button_play)
         val btnTextStop = getString(R.string.button_stop)
         val btnPermissionReadText = getString(R.string.text_switch_read_enable)
+        val semanticsButtonPlay = getString(R.string.semantics_button_play)
+        val semanticsButtonStop = getString(R.string.semantics_button_stop)
+        val semanticsTextSwitchReadEnable = getString(R.string.semantics_text_switch_read_enable)
+        val semanticsSwitchs = getString(R.string.semantics_switchs)
 
         setContent {
             VoiceNotifierTheme {
                 NotificationReaderScreen(
                     name = appTitle,
                     btnTextPlay = btnTextPlay,
+                    semanticsButtonPlay = semanticsButtonPlay,
                     btnTextStop = btnTextStop,
+                    semanticsButtonStop = semanticsButtonStop,
                     btnPermissionReadText = btnPermissionReadText,
                     isReading = isReading.value,
                     clickPlay = {
@@ -103,11 +109,13 @@ class MainActivity : ComponentActivity() {
                         stopService(serviceIntent)
                     },
                     notficationText = notificationText.value,
+                    semanticsTextSwitchReadEnable = semanticsTextSwitchReadEnable,
                     isReadTextNotification = isReadTextNotification.value,
                     clickSwitchReadTextNotification = { isChecked ->
                         isReadTextNotification.value = isChecked
                         updateConfig(isChecked)
                     },
+                    semanticsSwitchs = semanticsSwitchs,
                     viewModelApp = viewModelApp
                 )
             }

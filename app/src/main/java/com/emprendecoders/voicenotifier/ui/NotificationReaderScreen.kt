@@ -15,6 +15,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.emprendecoders.voicenotifier.database.model.AppPermissionEntity
 import com.emprendecoders.voicenotifier.database.viewmodel.AppPermissionViewModel
@@ -27,14 +29,18 @@ fun NotificationReaderScreen(
     name: String,
     modifier: Modifier = Modifier,
     btnTextPlay: String,
+    semanticsButtonPlay: String,
     btnTextStop: String,
+    semanticsButtonStop: String,
     btnPermissionReadText: String,
     isReading: Boolean,
     clickPlay: () -> Unit,
     clickStop: () -> Unit,
     notficationText: String,
+    semanticsTextSwitchReadEnable: String,
     isReadTextNotification: Boolean,
     clickSwitchReadTextNotification: (Boolean) -> Unit,
+    semanticsSwitchs: String,
     viewModelApp: AppPermissionViewModel?
 ) {
     val listado = remember { mutableStateListOf<AppPermissionEntity>() }
@@ -47,45 +53,47 @@ fun NotificationReaderScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(name) }
-            )
-        }
-    ) { innerPadding ->
+    Scaffold(topBar = {
+        TopAppBar(title = { Text(name) })
+    }) { innerPadding ->
         Column(modifier = modifier.padding(innerPadding)) {
             Button(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .semantics(mergeDescendants = true) {
+                        contentDescription =
+                            if (isReading) semanticsButtonStop else semanticsButtonPlay
+                    },
                 onClick = {
                     if (isReading) {
                         clickStop()
                     } else {
                         clickPlay()
                     }
-                }
+                },
             ) {
                 Text(if (isReading) btnTextStop else btnTextPlay)
             }
             Text(text = notficationText, modifier = modifier.padding(16.dp))
 
             Row {
-                Switch(
-                    checked = isReadTextNotification,
+                Switch(checked = isReadTextNotification,
                     onCheckedChange = {
                         clickSwitchReadTextNotification(it)
                     },
-                    modifier = modifier.padding(start = 16.dp)
-                )
+                    modifier = modifier
+                        .padding(start = 16.dp)
+                        .semantics(mergeDescendants = true) {
+                            contentDescription = semanticsTextSwitchReadEnable
+                        })
                 Text(
                     text = btnPermissionReadText,
                     modifier = modifier.padding(start = 16.dp, top = 12.dp)
                 )
             }
 
-            DynamicList(listado = listado, onPermissionChanged = { item ->
+            DynamicList(listado = listado, semanticsSwitchs = semanticsSwitchs, onPermissionChanged = { item ->
                 viewModelApp?.insert(item)
             })
         }
