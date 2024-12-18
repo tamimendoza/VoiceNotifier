@@ -27,7 +27,9 @@ class TextToSpeechManager(context: Context, onInit: (Boolean) -> Unit) {
     }
 
     fun speak(text: String, context: Context) {
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+        if (!tts.isSpeaking) {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+        }
     }
 
     fun shutdown() {

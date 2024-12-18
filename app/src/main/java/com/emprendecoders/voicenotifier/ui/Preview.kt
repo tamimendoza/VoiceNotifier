@@ -11,14 +11,18 @@ fun GreetingPreview() {
         NotificationReaderScreen(
             name = "Notification Reader",
             btnTextPlay = "Play",
+            semanticsButtonPlay = "Play",
             btnTextStop = "Stop",
+            semanticsButtonStop = "Stop",
             btnPermissionReadText = "Read Text",
             isReading = false,
             clickPlay = {},
             clickStop = {},
             notficationText = "...",
             isReadTextNotification = true,
+            semanticsTextSwitchReadEnable = "",
             clickSwitchReadTextNotification = {},
+            semanticsSwitchs = "",
             viewModelApp = null,
         )
     }

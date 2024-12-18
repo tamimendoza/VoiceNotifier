@@ -9,4 +9,8 @@
     <string name="text_switch_read_enable">Read notifications text</string>
     <string name="read_notificacion_background">Reading notification in background</string>
     <string name="text_permission_phone">Permission required to avoid interruptions</string>
+    <string name="semantics_button_play">Button to start reading the notifications</string>
+    <string name="semantics_button_stop">Button to stop reading the notifications</string>
+    <string name="semantics_text_switch_read_enable">Switch to read notification content</string>
+    <string name="semantics_switchs">Switch to read %s notifications</string>
 </resources>

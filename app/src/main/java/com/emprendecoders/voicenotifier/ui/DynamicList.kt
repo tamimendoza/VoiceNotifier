@@ -6,10 +6,18 @@ import androidx.compose.runtime.Composable
 import com.emprendecoders.voicenotifier.database.model.AppPermissionEntity
 
 @Composable
-fun DynamicList(listado: List<AppPermissionEntity>, onPermissionChanged: (AppPermissionEntity) -> Unit) {
+fun DynamicList(
+    listado: List<AppPermissionEntity>,
+    semanticsSwitchs: String,
+    onPermissionChanged: (AppPermissionEntity) -> Unit
+) {
     LazyColumn {
-        items(listado) {item ->
-            RowItem(item = item, onPermissionChanged = onPermissionChanged)
+        items(listado) { item ->
+            RowItem(
+                item = item,
+                semanticsSwitchs = semanticsSwitchs,
+                onPermissionChanged = onPermissionChanged
+            )
         }
     }
 }
