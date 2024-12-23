@@ -80,9 +80,9 @@ class NotificationListener : NotificationListenerService() {
     ) {
         serviceScope.launch {
             val appPermission = database.appPermissionDao().getAppByPackageName(packageName)
-            if (appPermission?.enabled == false) return@launch
-
-            sendNotificationBroadcast(appName, title, text)
+            if (appPermission?.enabled == true) {
+                sendNotificationBroadcast(appName, title, text)
+            }
         }
     }
 
